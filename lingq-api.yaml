@@ -1,0 +1,223 @@
+openapi: 3.0.0
+info:
+  title: Lingq.com API
+  description: HTTP API for lingq.com
+  version: 0.0.1
+servers:
+  - url: https://www.lingq.com/api/v2
+    description: Official lingq.com API
+paths:
+  /{lang}/collections/{id}:
+    get:
+      summary: Get collection data
+      operationId: langCollectionsIdGet
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: lang
+          in: path
+          required: true
+          schema: { type: string }
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  responses:
+    Unauthorized:
+      description: Access token is missing or invalid
+    Error:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+  schemas:
+    Collection:
+      type: object
+      required:
+        - pk
+        - url
+        - title
+        - description
+        - audio
+        - image
+        - imageUrl
+        - originalImageUrl
+        - completedRatio
+        - completedTimes
+        - lessonsCount
+        - newWordsCount
+        - difficulty
+        - level
+        - price
+        - provider
+        - providerImageUrl
+        - sharedByName
+        - sharedByImageUrl
+        - sourceURLEnabled
+        - sourceURL
+        - tags
+        - external_type
+        - rosesCount
+        - roseGiven
+        - type
+        - lessons
+      properties:
+        pk: { type: integer }
+        url: { type: string }
+        title: { type: string }
+        description: { type: string }
+        audio: { type: string, nullable: true }
+        image: { type: string }
+        imageUrl: { type: string }
+        originalImageUrl: { type: string }
+        completedRatio: { type: number }
+        completedTimes: { type: integer }
+        lessonsCount: { type: integer }
+        newWordsCount: { type: integer }
+        difficulty: { type: number }
+        level: { type: string }
+        price: { type: number }
+        provider: { type: string }
+        providerImageUrl: { type: string }
+        sharedByName: { type: string }
+        sharedByImageUrl: { type: string }
+        sourceURLEnabled: { type: boolean, nullable: true }
+        sourceURL: { type: string, nullable: true }
+        tags: { type: string }
+        external_type: { type: string, nullable: true }
+        rosesCount: { type: integer }
+        roseGiven: { type: boolean }
+        type: { type: string, enum: ['collection'] }
+        lessons:
+          type: array
+          items: { $ref: '#/components/schemas/Lesson' }
+    Lesson:
+      type: object
+      required:
+        - id
+        - contentId
+        - collectionId
+        - collectionTitle
+        - url
+        - originalUrl
+        - imageUrl
+        - originalImageUrl
+        - providerImageUrl
+        - title
+        - description
+        - duration
+        - audio
+        - audioPending
+        - pubDate
+        - sharedDate
+        - sharedByName
+        - giveRoseUrl
+        - wordCount
+        - uniqueWordCount
+        - external_type
+        - type
+        - status
+        - pos
+        - price
+        - opened
+        - completed
+        - percentCompleted
+        - newWordsCount
+        - difficulty
+        - providerName
+        - providerDescription
+        - lastRoseReceived
+        - lessonRating
+        - lessonVotes
+        - audioRating
+        - audioVotes
+        - rosesCount
+        - isFavorite
+        - isOverLimit
+        - level
+        - tags
+        - providerUrl
+        - readTimes
+        - listenTimes
+        - roseGiven
+        - openDate
+        - viewsCount
+        - isProtected
+      properties:
+        id: { type: integer }
+        contentId: { type: integer }
+        collectionId: { type: integer }
+        collectionTitle: { type: string }
+        url: { type: string }
+        originalUrl: { type: string, nullable: true }
+        imageUrl: { type: string }
+        originalImageUrl: { type: string }
+        providerImageUrl: { type: string }
+        title: { type: string }
+        description: { type: string }
+        duration: { type: number }
+        audio: { type: string }
+        audioPending: { type: boolean }
+        pubDate: { type: string, format: date-time }
+        sharedDate: { type: string, format: date-time, nullable: true }
+        sharedByName: { type: string }
+        giveRoseUrl: { type: string }
+        wordCount: { type: integer }
+        uniqueWordCount: { type: integer }
+        external_type: { type: string, nullable: true }
+        type: { type: string, enum: ['lesson'] }
+        status: { type: string }
+        pos: { type: number }
+        price: { type: number }
+        opened: { type: boolean }
+        completed: { type: boolean }
+        percentCompleted: { type: number }
+        newWordsCount: { type: integer }
+        difficulty: { type: number }
+        providerName: { type: string }
+        providerDescription: { type: string }
+        lastRoseReceived: { type: string, format: date-time }
+        lessonRating: { type: number }
+        lessonVotes: { type: integer }
+        audioRating: { type: number }
+        audioVotes: { type: integer }
+        rosesCount: { type: integer }
+        isFavorite: { type: boolean }
+        isOverLimit: { type: boolean, nullable: true }
+        level: { type: string }
+        tags: { type: array, items: { type: string } }
+        providerUrl: { type: string }
+        readTimes: { type: number }
+        listenTimes: { type: number }
+        roseGiven: { type: boolean }
+        openDate: { type: string, format: date-time }
+        viewsCount: { type: integer }
+        isProtected: { type: integer, nullable: true }
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
