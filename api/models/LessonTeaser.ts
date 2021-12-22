@@ -13,462 +13,321 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    Card,
-    CardFromJSON,
-    CardFromJSONTyped,
-    CardToJSON,
-    CollectionTeaser,
-    CollectionTeaserFromJSON,
-    CollectionTeaserFromJSONTyped,
-    CollectionTeaserToJSON,
-    LessonAllOf,
-    LessonAllOfFromJSON,
-    LessonAllOfFromJSONTyped,
-    LessonAllOfToJSON,
-    LessonTeaser,
-    LessonTeaserFromJSON,
-    LessonTeaserFromJSONTyped,
-    LessonTeaserToJSON,
-    TokenizedTextItem,
-    TokenizedTextItemFromJSON,
-    TokenizedTextItemFromJSONTyped,
-    TokenizedTextItemToJSON,
-    Word,
-    WordFromJSON,
-    WordFromJSONTyped,
-    WordToJSON,
-} from './';
-
 /**
  * 
  * @export
- * @interface Lesson
+ * @interface LessonTeaser
  */
-export interface Lesson {
+export interface LessonTeaser {
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     id: number;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     contentId: number;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     collectionId: number;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     collectionTitle: string;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     url: string;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     originalUrl: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     imageUrl: string;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     originalImageUrl: string;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     providerImageUrl: string;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     title: string;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     description: string;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     duration: number;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     audio: string;
     /**
      * 
      * @type {boolean}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     audioPending: boolean;
     /**
      * 
      * @type {Date}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     pubDate: Date;
     /**
      * 
      * @type {Date}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     sharedDate: Date | null;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     sharedByName: string;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     giveRoseUrl: string;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     wordCount: number;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     uniqueWordCount: number;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     externalType: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
-    type: LessonTypeEnum;
+    type: LessonTeaserTypeEnum;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     status: string;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     pos: number;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     price: number;
     /**
      * 
      * @type {boolean}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     opened: boolean;
     /**
      * 
      * @type {boolean}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     completed: boolean;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     percentCompleted: number;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     newWordsCount: number;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     difficulty: number;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     providerName: string;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     providerDescription: string;
     /**
      * 
      * @type {Date}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     lastRoseReceived: Date;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     lessonRating: number;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     lessonVotes: number;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     audioRating: number;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     audioVotes: number;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     rosesCount: number;
     /**
      * 
      * @type {boolean}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     isFavorite: boolean;
     /**
      * 
      * @type {boolean}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     isOverLimit: boolean | null;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     level: string;
     /**
      * 
      * @type {Array<string>}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     tags: Array<string>;
     /**
      * 
      * @type {string}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     providerUrl: string;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     readTimes: number;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     listenTimes: number;
     /**
      * 
      * @type {boolean}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     roseGiven: boolean;
     /**
      * 
      * @type {Date}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     openDate: Date;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     viewsCount: number;
     /**
      * 
      * @type {number}
-     * @memberof Lesson
+     * @memberof LessonTeaser
      */
     isProtected: number | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof Lesson
-     */
-    notes: string | null;
-    /**
-     * 
-     * @type {CollectionTeaser}
-     * @memberof Lesson
-     */
-    collection: CollectionTeaser;
-    /**
-     * 
-     * @type {Array<Array<TokenizedTextItem>>}
-     * @memberof Lesson
-     */
-    tokenizedText: Array<Array<TokenizedTextItem>>;
-    /**
-     * 
-     * @type {string}
-     * @memberof Lesson
-     */
-    classicUrl: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof Lesson
-     */
-    timestamp: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Lesson
-     */
-    sharedByImageUrl: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Lesson
-     */
-    sharedByIsFriend: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Lesson
-     */
-    promotedCourse: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof Lesson
-     */
-    printUrl: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Lesson
-     */
-    canEdit: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Lesson
-     */
-    canEditSentence: boolean;
-    /**
-     * 
-     * @type {number}
-     * @memberof Lesson
-     */
-    nextLessonId: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Lesson
-     */
-    previousLessonId: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Lesson
-     */
-    videoUrl: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof Lesson
-     */
-    cardsCount: number;
-    /**
-     * 
-     * @type {object}
-     * @memberof Lesson
-     */
-    bookmark: object;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Lesson
-     */
-    isLegacy: boolean;
-    /**
-     * 
-     * @type {{ [key: string]: Word; }}
-     * @memberof Lesson
-     */
-    words: { [key: string]: Word; };
-    /**
-     * 
-     * @type {{ [key: string]: Card; }}
-     * @memberof Lesson
-     */
-    cards: { [key: string]: Card; };
 }
 
 /**
 * @export
 * @enum {string}
 */
-export enum LessonTypeEnum {
+export enum LessonTeaserTypeEnum {
     Lesson = 'lesson'
 }
 
-export function LessonFromJSON(json: any): Lesson {
-    return LessonFromJSONTyped(json, false);
+export function LessonTeaserFromJSON(json: any): LessonTeaser {
+    return LessonTeaserFromJSONTyped(json, false);
 }
 
-export function LessonFromJSONTyped(json: any, ignoreDiscriminator: boolean): Lesson {
+export function LessonTeaserFromJSONTyped(json: any, ignoreDiscriminator: boolean): LessonTeaser {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -523,29 +382,10 @@ export function LessonFromJSONTyped(json: any, ignoreDiscriminator: boolean): Le
         'openDate': (new Date(json['openDate'])),
         'viewsCount': json['viewsCount'],
         'isProtected': json['isProtected'],
-        'notes': json['notes'],
-        'collection': CollectionTeaserFromJSON(json['collection']),
-        'tokenizedText': json['tokenizedText'],
-        'classicUrl': json['classicUrl'],
-        'timestamp': json['timestamp'],
-        'sharedByImageUrl': json['sharedByImageUrl'],
-        'sharedByIsFriend': json['sharedByIsFriend'],
-        'promotedCourse': json['promotedCourse'],
-        'printUrl': json['printUrl'],
-        'canEdit': json['canEdit'],
-        'canEditSentence': json['canEditSentence'],
-        'nextLessonId': json['nextLessonId'],
-        'previousLessonId': json['previousLessonId'],
-        'videoUrl': json['videoUrl'],
-        'cardsCount': json['cardsCount'],
-        'bookmark': json['bookmark'],
-        'isLegacy': json['isLegacy'],
-        'words': (mapValues(json['words'], WordFromJSON)),
-        'cards': (mapValues(json['cards'], CardFromJSON)),
     };
 }
 
-export function LessonToJSON(value?: Lesson | null): any {
+export function LessonTeaserToJSON(value?: LessonTeaser | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -603,25 +443,6 @@ export function LessonToJSON(value?: Lesson | null): any {
         'openDate': (value.openDate.toISOString()),
         'viewsCount': value.viewsCount,
         'isProtected': value.isProtected,
-        'notes': value.notes,
-        'collection': CollectionTeaserToJSON(value.collection),
-        'tokenizedText': value.tokenizedText,
-        'classicUrl': value.classicUrl,
-        'timestamp': value.timestamp,
-        'sharedByImageUrl': value.sharedByImageUrl,
-        'sharedByIsFriend': value.sharedByIsFriend,
-        'promotedCourse': value.promotedCourse,
-        'printUrl': value.printUrl,
-        'canEdit': value.canEdit,
-        'canEditSentence': value.canEditSentence,
-        'nextLessonId': value.nextLessonId,
-        'previousLessonId': value.previousLessonId,
-        'videoUrl': value.videoUrl,
-        'cardsCount': value.cardsCount,
-        'bookmark': value.bookmark,
-        'isLegacy': value.isLegacy,
-        'words': (mapValues(value.words, WordToJSON)),
-        'cards': (mapValues(value.cards, CardToJSON)),
     };
 }
 

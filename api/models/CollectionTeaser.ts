@@ -14,14 +14,6 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    CollectionAllOf,
-    CollectionAllOfFromJSON,
-    CollectionAllOfFromJSONTyped,
-    CollectionAllOfToJSON,
-    CollectionTeaser,
-    CollectionTeaserFromJSON,
-    CollectionTeaserFromJSONTyped,
-    CollectionTeaserToJSON,
     LessonTeaser,
     LessonTeaserFromJSON,
     LessonTeaserFromJSONTyped,
@@ -31,169 +23,169 @@ import {
 /**
  * 
  * @export
- * @interface Collection
+ * @interface CollectionTeaser
  */
-export interface Collection {
+export interface CollectionTeaser {
     /**
      * 
      * @type {number}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     pk: number;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     url: string;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     title: string;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     description: string;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     audio: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     image: string;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     imageUrl: string;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     originalImageUrl: string;
     /**
      * 
      * @type {number}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     completedRatio: number;
     /**
      * 
      * @type {number}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     completedTimes: number;
     /**
      * 
      * @type {number}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     lessonsCount: number;
     /**
      * 
      * @type {number}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     newWordsCount: number;
     /**
      * 
      * @type {number}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     difficulty: number;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     level: string;
     /**
      * 
      * @type {number}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     price: number;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     provider: string;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     providerImageUrl: string;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     sharedByName: string;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     sharedByImageUrl: string;
     /**
      * 
      * @type {boolean}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     sourceURLEnabled: boolean | null;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     sourceURL: string | null;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     tags: string;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     externalType: string | null;
     /**
      * 
      * @type {number}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     rosesCount: number;
     /**
      * 
      * @type {boolean}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     roseGiven: boolean;
     /**
      * 
      * @type {string}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
-    type: CollectionTypeEnum;
+    type: CollectionTeaserTypeEnum;
     /**
      * 
      * @type {Array<LessonTeaser>}
-     * @memberof Collection
+     * @memberof CollectionTeaser
      */
     lessons: Array<LessonTeaser>;
 }
@@ -202,15 +194,15 @@ export interface Collection {
 * @export
 * @enum {string}
 */
-export enum CollectionTypeEnum {
+export enum CollectionTeaserTypeEnum {
     Collection = 'collection'
 }
 
-export function CollectionFromJSON(json: any): Collection {
-    return CollectionFromJSONTyped(json, false);
+export function CollectionTeaserFromJSON(json: any): CollectionTeaser {
+    return CollectionTeaserFromJSONTyped(json, false);
 }
 
-export function CollectionFromJSONTyped(json: any, ignoreDiscriminator: boolean): Collection {
+export function CollectionTeaserFromJSONTyped(json: any, ignoreDiscriminator: boolean): CollectionTeaser {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -246,7 +238,7 @@ export function CollectionFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     };
 }
 
-export function CollectionToJSON(value?: Collection | null): any {
+export function CollectionTeaserToJSON(value?: CollectionTeaser | null): any {
     if (value === undefined) {
         return undefined;
     }

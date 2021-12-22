@@ -7,7 +7,7 @@
     "run": "bin/lingq-dl",
     "build": "rimraf js && tsc",
     "lint": "eslint '**/*.{js,ts,tsx}'",
-    "api": "rimraf api && openapi-generator-cli generate -i lingq-api.yaml -g typescript-fetch -o api/",
+    "api": "node build-api.js && rimraf api && openapi-generator-cli generate -i lingq-api_openapi.yaml -g typescript-fetch -o api/",
     "release": "standard-version"
   },
   "devDependencies": {
@@ -24,6 +24,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "husky": "^6.0.0",
+    "js-yaml": "^4.1.0",
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
     "standard-version": "^9.3.0",

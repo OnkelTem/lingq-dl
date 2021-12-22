@@ -21,9 +21,17 @@ import {
     ErrorResponse,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    Lesson,
+    LessonFromJSON,
+    LessonToJSON,
 } from '../models';
 
 export interface LangCollectionsIdGetRequest {
+    lang: string;
+    id: number;
+}
+
+export interface LangLessonsIdGetRequest {
     lang: string;
     id: number;
 }
@@ -68,6 +76,44 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async langCollectionsIdGet(requestParameters: LangCollectionsIdGetRequest, initOverrides?: RequestInit): Promise<Collection> {
         const response = await this.langCollectionsIdGetRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Get lessson data
+     */
+    async langLessonsIdGetRaw(requestParameters: LangLessonsIdGetRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<Lesson>> {
+        if (requestParameters.lang === null || requestParameters.lang === undefined) {
+            throw new runtime.RequiredError('lang','Required parameter requestParameters.lang was null or undefined when calling langLessonsIdGet.');
+        }
+
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling langLessonsIdGet.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // ApiKeyAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/{lang}/lessons/{id}`.replace(`{${"lang"}}`, encodeURIComponent(String(requestParameters.lang))).replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => LessonFromJSON(jsonValue));
+    }
+
+    /**
+     * Get lessson data
+     */
+    async langLessonsIdGet(requestParameters: LangLessonsIdGetRequest, initOverrides?: RequestInit): Promise<Lesson> {
+        const response = await this.langLessonsIdGetRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

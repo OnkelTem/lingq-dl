@@ -45,3 +45,8 @@ $ echo TOKEN > .lingq-dl.key
     ```
 
 To be continued.
+
+
+## TODO
+
+- Put lessons text into tags? @see: https://id3.org/Lyrics3v2
