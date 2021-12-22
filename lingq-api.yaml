@@ -123,7 +123,6 @@ components:
         - rosesCount
         - roseGiven
         - type
-        - lessons
       properties:
         pk: *int
         url: *str
@@ -152,9 +151,6 @@ components:
         roseGiven: *bool
         # TODO: type.enum
         type: { type: string, enum: ['collection'] }
-        lessons:
-          type: array
-          items: { $ref: '#/components/schemas/LessonTeaser' }
 
     Collection:
       allOf:
@@ -407,14 +403,15 @@ components:
         - importance
         - text
         - status
-        - hints
+        # Can be missed
+        # - hints
         - tags
       properties:
         importance: *int
         text: *str
-        status: { type: string, enum: ['known'] }
-        hints: { type: array, items: { $ref: '#/components/schemas/WordHint' } }
         # TODO: status.enum
+        status: { type: string, enum: ['known', 'card'] }
+        hints: { type: array, items: { $ref: '#/components/schemas/WordHint' } }
         tags: *strA
 
     WordHint:

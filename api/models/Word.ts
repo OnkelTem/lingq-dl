@@ -49,7 +49,7 @@ export interface Word {
      * @type {Array<WordHint>}
      * @memberof Word
      */
-    hints: Array<WordHint>;
+    hints?: Array<WordHint>;
     /**
      * 
      * @type {Array<string>}
@@ -63,7 +63,8 @@ export interface Word {
 * @enum {string}
 */
 export enum WordStatusEnum {
-    Known = 'known'
+    Known = 'known',
+    Card = 'card'
 }
 
 export function WordFromJSON(json: any): Word {
@@ -79,7 +80,7 @@ export function WordFromJSONTyped(json: any, ignoreDiscriminator: boolean): Word
         'importance': json['importance'],
         'text': json['text'],
         'status': json['status'],
-        'hints': ((json['hints'] as Array<any>).map(WordHintFromJSON)),
+        'hints': !exists(json, 'hints') ? undefined : ((json['hints'] as Array<any>).map(WordHintFromJSON)),
         'tags': json['tags'],
     };
 }
@@ -96,7 +97,7 @@ export function WordToJSON(value?: Word | null): any {
         'importance': value.importance,
         'text': value.text,
         'status': value.status,
-        'hints': ((value.hints as Array<any>).map(WordHintToJSON)),
+        'hints': value.hints === undefined ? undefined : ((value.hints as Array<any>).map(WordHintToJSON)),
         'tags': value.tags,
     };
 }

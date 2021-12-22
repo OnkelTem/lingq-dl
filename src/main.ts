@@ -1,17 +1,24 @@
 import pino from 'pino';
-import sanitize from 'sanitize-filename';
+import sanitizeFilename from 'sanitize-filename';
 import fs, { mkdirSync } from 'fs';
 import path from 'path';
 import fetch, { Response } from 'node-fetch';
 import delay from 'delay';
 
-import * as Runtime from '../api/runtime';
-import * as Apis from '../api/apis';
 import { LoggerLevel, DEFAULT_LOGGER_OPTIONS } from './logger';
-import { hasKey, pathExists, pathIsDir, pathIsRw } from './utils';
+import {
+  DownloadPlan,
+  DownloadPlanItemType,
+  hasKey,
+  isDownloadPlanItemAudio,
+  isDownloadPlanItemText,
+  pathExists,
+  pathIsDir,
+  pathIsRw,
+} from './utils';
 import { promisify } from 'util';
 import { pipeline } from 'stream';
-import pEvent from 'p-event';
+import api from './api';
 
 type MainParams = {
   lang: string;
@@ -20,6 +27,8 @@ type MainParams = {
   apiKey: string;
   logLevel: LoggerLevel;
 };
+
+const FILE_EXT_TEXT = '.txt';
 
 export async function main(params: MainParams) {
   const { lang, courseId, directory, apiKey, logLevel } = params;
@@ -38,14 +47,7 @@ export async function main(params: MainParams) {
   logger.info(`Language: ${lang}`);
   try {
     logger.info(`Fetching course [${courseId}] data`);
-    const req: Apis.LangCollectionsIdGetRequest = {
-      lang: lang,
-      id: courseId,
-    };
-    const configuration = new Runtime.Configuration({ apiKey: `Token ${apiKey}` });
-    const apiItem = new Apis.DefaultApi(configuration);
-    const course = await apiItem.langCollectionsIdGet(req);
-
+    const course = await api.fetchCourse(apiKey, { lang, id: courseId });
     // Print some info about the course
     logger.info(`Course title: ${course.title}`);
     logger.info(
@@ -53,7 +55,7 @@ export async function main(params: MainParams) {
         course.lessonsCount !== course.lessons.length ? ` (${course.lessons.length})` : ''
       }`,
     );
-    const outputPath = path.resolve(directory ?? sanitize(`${lang}-${course.pk}-${course.title}`));
+    const outputPath = path.resolve(directory ?? `${lang}_${course.pk}_${sanitize(course.title)}`);
     logger.info(`Download path: "${outputPath}"${directory == null ? ' (auto detected)' : ''}`);
     ensureDir(outputPath);
 
@@ -61,12 +63,12 @@ export async function main(params: MainParams) {
 
     // We will take file by file, fetching its content and writing in to the output dir.
     // The naming scheme should be:
-    //   lang + course id + course title + number + extension
+    //   lang + course id + lesson number + lesson title + extension
     // so that a user could save different lessons in one directory and still have them properly sorted.
 
     // A utility function to download files
     function downloadFile(url: string, path: string) {
-      return new Promise(async (resolve, reject) => {
+      return new Promise(async (resolve) => {
         const fileStream = fs.createWriteStream(path);
         function deleteFile() {
           return new Promise((r) =>
@@ -114,41 +116,81 @@ export async function main(params: MainParams) {
     // Calc max digits
     const lessonDigitsCount = (Math.log(course.lessons.length) * Math.LOG10E + 1) | 0;
 
-    const downloadPlan: { url: string; filePath: string }[] = [];
+    // Retrieve lessons
+
+    const downloadPlan: DownloadPlan = [];
 
     for (let i = 0; i < course.lessons.length; i++) {
-      const url = course.lessons[i].audio;
+      const lesson = course.lessons[i];
       // Construct the name
-      const extension = path.extname(url);
+      const extension = path.extname(lesson.audio);
       if (extension === '') {
         // Then we have problem as we don't know the codec.
         // TODO: guess the extension via http content and mime.
         logger.warn(`Audio file link doesn't have an extension, skipping it.`);
-        logger.warn(`Link: "${url}"`);
+        logger.warn(`Link: "${lesson.audio}"`);
       }
-      const fileName = `${lang}-${course.pk}-${(i + 1).toString().padStart(lessonDigitsCount, '0')}-${sanitize(
-        course.title,
-      )}${extension}`;
-      const filePath = path.join(outputPath, fileName);
+      const lessonNum = `${(i + 1).toString().padStart(lessonDigitsCount, '0')}/${course.lessons.length}`;
 
-      // Check if we have this file already
-      if (pathExists(filePath)) {
-        // Option to overwrite?
-        logger.info(`Skipping "${filePath}" (already there).`);
+      const fileNameDummy = `${lang}_${course.pk}_${sanitize(lessonNum)}_${sanitize(lesson.title)}_${sanitize(
+        course.title,
+      )}`;
+
+      const fileNameAudio = `${fileNameDummy}${extension}`;
+      const fileNameText = `${fileNameDummy}${FILE_EXT_TEXT}`;
+      const filePathAudio = path.join(outputPath, fileNameAudio);
+      const filePathText = path.join(outputPath, fileNameText);
+
+      // Check if we have this audio file already
+      if (pathExists(filePathAudio)) {
+        // TODO: add an option to overwrite? E.g. --force|-f
+        logger.info(`Skipping "${filePathAudio}" (already there).`);
       } else {
-        downloadPlan.push({ url, filePath });
+        downloadPlan.push({
+          type: DownloadPlanItemType.AUDIO,
+          lessonId: lesson.id,
+          lessonNum,
+          url: lesson.audio,
+          title: lesson.title,
+          filePath: filePathAudio,
+        });
+      }
+      // Check if we have this text already
+      if (pathExists(filePathText)) {
+        // TODO: add an option to overwrite? E.g. --force|-f
+        logger.info(`Skipping "${filePathText}" (already there).`);
+      } else {
+        downloadPlan.push({
+          type: DownloadPlanItemType.TEXT,
+          lessonId: lesson.id,
+          lessonNum,
+          title: lesson.title,
+          filePath: filePathText,
+        });
       }
     }
 
     if (downloadPlan.length !== 0) {
       for (let i = 0; i < downloadPlan.length; i++) {
-        const { url, filePath } = downloadPlan[i];
-        logger.info(`Downloading "${filePath}"`);
-        logger.debug(`URL: "${url}"`);
-        await downloadFile(url, filePath);
+        const item = downloadPlan[i];
+        if (isDownloadPlanItemAudio(item)) {
+          const { lessonId, lessonNum, url, title, filePath } = item;
+          logger.info(`Downloading audio for lesson ${lessonNum}: "${title}" [id=${lessonId}]`);
+          logger.debug(`URL: "${url}"`);
+          await downloadFile(url, filePath);
+        }
+        if (isDownloadPlanItemText(item)) {
+          // Retrieve the lesson from the API
+          const { lessonId, lessonNum, title, filePath } = item;
+          logger.info(`Retrieving text for lesson ${lessonNum}: "${title}" [id=${lessonId}]`);
+          const lesson = await api.fetchLesson(apiKey, { lang, id: lessonId });
+          // Fetch lesson text
+          const text = lesson.tokenizedText.map((items) => items.map((item) => item.text).join('\n')).join('\n\n');
+          fs.writeFileSync(filePath, text);
+        }
       }
     } else {
-      logger.info('There are no files to download.');
+      logger.info('There are no files to fetch.');
     }
   } catch (err) {
     if (hasKey(err, 'message') && typeof err.message === 'string') {
@@ -157,4 +199,16 @@ export async function main(params: MainParams) {
       console.error(err);
     }
   }
+}
+
+function sanitize(value: string) {
+  return sanitizeFilename(value, {
+    replacement: (s: string) => {
+      if (s === '/') {
+        return '-';
+      } else {
+        return '';
+      }
+    },
+  });
 }

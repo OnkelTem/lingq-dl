@@ -55,3 +55,34 @@ export function pathIsRw(path: string) {
   }
   return true;
 }
+
+export enum DownloadPlanItemType {
+  AUDIO = 'audio',
+  TEXT = 'text',
+}
+
+export type DownloadPlanItem = {
+  lessonId: number;
+  lessonNum: string;
+  title: string;
+  filePath: string;
+};
+
+export type DownloadPlanItemAudio = DownloadPlanItem & {
+  type: DownloadPlanItemType.AUDIO;
+  url: string;
+};
+
+export function isDownloadPlanItemAudio(item: unknown): item is DownloadPlanItemAudio {
+  return typeof item === 'object' && item != null && hasKey(item, 'type') && item.type === DownloadPlanItemType.AUDIO;
+}
+
+export type DownloadPlanItemText = DownloadPlanItem & {
+  type: DownloadPlanItemType.TEXT;
+};
+
+export function isDownloadPlanItemText(item: unknown): item is DownloadPlanItemText {
+  return typeof item === 'object' && item != null && hasKey(item, 'type') && item.type === DownloadPlanItemType.TEXT;
+}
+
+export type DownloadPlan = (DownloadPlanItemAudio | DownloadPlanItemText)[];

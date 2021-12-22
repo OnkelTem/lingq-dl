@@ -50,3 +50,5 @@ To be continued.
 ## TODO
 
 - Put lessons text into tags? @see: https://id3.org/Lyrics3v2
+- Make file-naming custom, e.g. to allow for path/name templates: $course.id$_$course.title$/$lesson.title$ and only 
+  add extensions there.

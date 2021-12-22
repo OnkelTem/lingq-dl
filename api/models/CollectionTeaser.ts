@@ -187,7 +187,7 @@ export interface CollectionTeaser {
      * @type {Array<LessonTeaser>}
      * @memberof CollectionTeaser
      */
-    lessons: Array<LessonTeaser>;
+    lessons?: Array<LessonTeaser>;
 }
 
 /**
@@ -234,7 +234,7 @@ export function CollectionTeaserFromJSONTyped(json: any, ignoreDiscriminator: bo
         'rosesCount': json['rosesCount'],
         'roseGiven': json['roseGiven'],
         'type': json['type'],
-        'lessons': ((json['lessons'] as Array<any>).map(LessonTeaserFromJSON)),
+        'lessons': !exists(json, 'lessons') ? undefined : ((json['lessons'] as Array<any>).map(LessonTeaserFromJSON)),
     };
 }
 
@@ -273,7 +273,7 @@ export function CollectionTeaserToJSON(value?: CollectionTeaser | null): any {
         'rosesCount': value.rosesCount,
         'roseGiven': value.roseGiven,
         'type': value.type,
-        'lessons': ((value.lessons as Array<any>).map(LessonTeaserToJSON)),
+        'lessons': value.lessons === undefined ? undefined : ((value.lessons as Array<any>).map(LessonTeaserToJSON)),
     };
 }
 
