@@ -26,12 +26,13 @@ type MainParams = {
   directory?: string;
   apiKey: string;
   logLevel: LoggerLevel;
+  dryRun: boolean;
 };
 
 const FILE_EXT_TEXT = '.txt';
 
 export async function main(params: MainParams) {
-  const { lang, courseId, directory, apiKey, logLevel } = params;
+  const { lang, courseId, directory, apiKey, logLevel, dryRun } = params;
   const logger = pino({ ...DEFAULT_LOGGER_OPTIONS, level: logLevel });
 
   function ensureDir(path: string) {
@@ -42,6 +43,12 @@ export async function main(params: MainParams) {
     }
     mkdirSync(path);
     logger.info(`Created directory: "${path}"`);
+  }
+
+  if (dryRun) {
+    logger.warn('--------------------');
+    logger.warn('Dry-run mode enabled');
+    logger.warn('--------------------');
   }
 
   logger.info(`Language: ${lang}`);
@@ -57,7 +64,7 @@ export async function main(params: MainParams) {
     );
     const outputPath = path.resolve(directory ?? `${lang}_${course.pk}_${sanitize(course.title)}`);
     logger.info(`Download path: "${outputPath}"${directory == null ? ' (auto detected)' : ''}`);
-    ensureDir(outputPath);
+    if (!dryRun) ensureDir(outputPath);
 
     // Now we can download all the files from the collection.
 
@@ -111,7 +118,7 @@ export async function main(params: MainParams) {
       });
     }
 
-    logger.info('Starting download');
+    logger.info(`Starting download`);
 
     // Calc max digits
     const lessonDigitsCount = (Math.log(course.lessons.length) * Math.LOG10E + 1) | 0;
@@ -177,7 +184,7 @@ export async function main(params: MainParams) {
           const { lessonId, lessonNum, url, title, filePath } = item;
           logger.info(`Downloading audio for lesson ${lessonNum}: "${title}" [id=${lessonId}]`);
           logger.debug(`URL: "${url}"`);
-          await downloadFile(url, filePath);
+          if (!dryRun) await downloadFile(url, filePath);
         }
         if (isDownloadPlanItemText(item)) {
           // Retrieve the lesson from the API
@@ -186,7 +193,7 @@ export async function main(params: MainParams) {
           const lesson = await api.fetchLesson(apiKey, { lang, id: lessonId });
           // Fetch lesson text
           const text = lesson.tokenizedText.map((items) => items.map((item) => item.text).join('\n')).join('\n\n');
-          fs.writeFileSync(filePath, text);
+          if (!dryRun) fs.writeFileSync(filePath, text);
         }
       }
     } else {

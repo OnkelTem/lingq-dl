@@ -7,7 +7,7 @@
     "run": "bin/lingq-dl",
     "build": "rimraf js && tsc",
     "lint": "eslint '**/*.{js,ts,tsx}'",
-    "api": "node build-api.js && rimraf api && openapi-generator-cli generate -i lingq-api_openapi.yaml -g typescript-fetch -o api/",
+    "api": "node build-api.js && rimraf api && openapi-generator-cli generate -i lingq-api_openapi.yaml -t openapi-templates  -g typescript-fetch -o api/ && prettier --write api/",
     "release": "standard-version"
   },
   "devDependencies": {

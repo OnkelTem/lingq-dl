@@ -3,6 +3,7 @@
 !/bin/
 !/src/
 !/types/
+!/openapi-templates/
 !/.eslintignore
 !/.eslintrc.js
 !/.gitignore

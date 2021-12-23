@@ -290,7 +290,6 @@ components:
             - bookmark
             - isLegacy
             - cards
-            - timestamp
             - words
           properties:
             notes: *str?
@@ -299,15 +298,14 @@ components:
               type: array
               items: { $ref: '#/components/schemas/TokenizedTextGroup' }
             classicUrl: *str
-            timestamp: *num
             sharedByImageUrl: *str
             sharedByIsFriend: *bool
-            promotedCourse: *bool
+            promotedCourse: *bool?
             printUrl: *str
             canEdit: *bool
             canEditSentence: *bool
-            nextLessonId: *int
-            previousLessonId: *int
+            nextLessonId: *int?
+            previousLessonId: *int?
             # TODO: transliteration
             # TODO: altScript
             # TODO: exercises
@@ -345,7 +343,8 @@ components:
       required:
         - pk
         - status
-        - tags
+        # Can be missed
+        # - tags
         - importance
         - extended_status
         - words
@@ -360,7 +359,7 @@ components:
         status: *int
         tags: *strA
         importance: *int
-        extended_status: *int
+        extended_status: *int?
         words: *strA
         # TODO: altScript
         hints: { type: array, items: { $ref: '#/components/schemas/CardsHint' } }
@@ -393,7 +392,7 @@ components:
         popularity: *int
         approved: *bool
         detected_locale: *str?
-        creator_id: *int
+        creator_id: *int?
         text: *str
         word_id: *int
 

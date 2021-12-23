@@ -41,6 +41,12 @@ const options = {
     description: `Your Lingq.com API key. Get it here: https://www.lingq.com/fr/accounts/apikey/. You can also put your API key in the '${API_KEY_FILENAME}' file.`,
     type: 'string',
   },
+  dryRun: {
+    alias: 'd',
+    default: false,
+    description: `Your Lingq.com API key. Get it here: https://www.lingq.com/fr/accounts/apikey/. You can also put your API key in the '${API_KEY_FILENAME}' file.`,
+    type: 'boolean',
+  },
 } as const;
 type OptionName = keyof typeof options;
 
@@ -105,6 +111,7 @@ yargs(hideBin(process.argv))
         directory: argv.directory,
         apiKey: (argv.apiKey ?? apiKeyFromFile)!,
         logLevel: argv.verbose!,
+        dryRun: argv.dryRun,
       });
       process.exit(0);
     },

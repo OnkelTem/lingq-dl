@@ -52,3 +52,37 @@ To be continued.
 - Put lessons text into tags? @see: https://id3.org/Lyrics3v2
 - Make file-naming custom, e.g. to allow for path/name templates: $course.id$_$course.title$/$lesson.title$ and only 
   add extensions there.
+- Customize OpenAPI generators to get type checking more strict.
+
+
+
+export function getByKey(cls: string, data: any, key: string, required: boolean, nullable: boolean) {
+if (typeof data !== 'object') {
+throw new Error(`OpenApiDataCheckError: "${cls}" must be an object, "${typeof data}" received.`);
+}
+if (required) {
+if (!data.hasOwnProperty(key)) {
+throw new Error(`OpenApiDataCheckError: Required field "${cls}.${key}" is missed.`);
+}
+if (data[key] === undefined) {
+throw new Error(`OpenApiDataCheckError: Required field "${cls}.${key}" === undefined.`);
+}
+if (!nullable) {
+if (data[key] === null) {
+throw new Error(`OpenApiDataCheckError: Non-nullable field "${cls}.${key}" === null.`);
+}
+}
+}
+else {
+if (data.hasOwnProperty(key)) {
+if (!nullable) {
+if (data[key] === null) {
+throw new Error(`OpenApiDataCheckError: Non-nullable field "${cls}.${key}" === null.`);
+}
+if (data[key] === undefined) {
+throw new Error(`OpenApiDataCheckError: Non-nullable field "${cls}.${key}" === undefined.`);
+}
+}
+}
+return data[key];
+}
